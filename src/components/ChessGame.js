@@ -3,7 +3,9 @@ import { Chess } from "chess.js";
 import { Chessboard } from "react-chessboard";
 import io from "socket.io-client";
 
-const socket = io("http://localhost:5000");
+//const socket = io("http://localhost:5000");
+const socket = io("https://chess-project-jvvt.onrender.com");
+
 
 const ChessGame = () => {
     const [game, setGame] = useState(new Chess());
