@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
 
-// ✅ Use your deployed backend URL
-const BASE_URL = "https://chess-project-jvvt.onrender.com";
+// ✅ Updated to use correct backend URL
+const BASE_URL = "https://chess-project-jvvt.onrender.com";  
 const socket = io(BASE_URL, {
     transports: ["websocket", "polling"]
 });
@@ -20,27 +20,26 @@ const Chat = () => {
     useEffect(() => {
         if (userId) {
             socket.emit("joinChat", userId);
-            console.log("✅ Joining chat with userId:", userId); // Debugging
+            console.log("✅ Joining chat with userId:", userId);
         }
 
-        // ✅ Fetch users from MongoDB when component loads
+        // ✅ Fetch users from MongoDB
         axios.get(`${BASE_URL}/api/users`)
             .then((res) => {
-                console.log("✅ Fetched Users from MongoDB:", res.data);
+                console.log("✅ Fetched Users:", res.data);
                 setUsers(res.data);
             })
             .catch((err) => console.error("❌ Error fetching users:", err));
 
         // ✅ Listen for updates from Socket.io
         socket.on("updateUsers", (userList) => {
-            console.log("🔄 Updated Users from Socket.io:", userList);
+            console.log("🔄 Updated Users:", userList);
             setUsers((prevUsers) => [...new Set([...prevUsers, ...userList])]);
         });
 
         // ✅ Listen for incoming messages
         socket.on("receiveMessage", (data) => {
             console.log(`📩 Received message:`, data);
-
             if (
                 (data.receiver === userId || data.sender === userId) &&
                 (data.sender === selectedUser || data.receiver === selectedUser)
@@ -49,11 +48,10 @@ const Chat = () => {
             }
         });
 
-        // ✅ Listen for game invites
         socket.on("invitePlayer", ({ fromUser }) => {
             console.log(`🎮 Received game invite from ${fromUser}`);
             if (window.confirm(`${fromUser} invited you to play! Accept?`)) {
-                navigate("/"); // Redirect to game page
+                navigate("/");
             }
         });
 
@@ -61,11 +59,10 @@ const Chat = () => {
             console.log("❌ Cleaning up event listeners...");
             socket.off("receiveMessage");
             socket.off("updateUsers");
-            socket.off("invitePlayer"); // ✅ Corrected cleanup
+            socket.off("invitePlayer");
         };
     }, [userId, selectedUser, navigate]);
 
-    // ✅ Step 2: Fetch chat history when a user is selected
     useEffect(() => {
         if (selectedUser && userId) {
             axios.get(`${BASE_URL}/api/messages/${userId}/${selectedUser}`)
@@ -75,7 +72,7 @@ const Chat = () => {
                 })
                 .catch((err) => console.error("❌ Error fetching chat history:", err));
         }
-    }, [userId, selectedUser]);  // ✅ Now updates when userId changes too
+    }, [userId, selectedUser]);
 
     const sendMessage = async () => {
         if (!message.trim() || !selectedUser) {
@@ -110,9 +107,8 @@ const Chat = () => {
 
     const invitePlayer = () => {
         if (selectedUser) {
-            console.log(`🎮 Clicking button... Sending invite from ${userId} to ${selectedUser}`);
+            console.log(`🎮 Sending invite from ${userId} to ${selectedUser}`);
             socket.emit("invitePlayer", { fromUser: userId, toUser: selectedUser });
-            console.log(`🎮 Game invite sent from ${userId} to ${selectedUser}`);
             alert(`Game invite sent to ${selectedUser}`);
         } else {
             console.log("❌ No selected user found!");
