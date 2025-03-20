@@ -10,9 +10,8 @@ const Chat = () => {
     const [message, setMessage] = useState("");
     const [messages, setMessages] = useState([]);
     const [users, setUsers] = useState([]);
-    const [userId, setUserId] = useState(localStorage.getItem("userId") || ""); // User's unique ID
+    const [userId] = useState(localStorage.getItem("userId") || ""); // User's unique ID
     const [selectedUser, setSelectedUser] = useState("");
-    const [messageCount, setMessageCount] = useState(0); // Force re-render
 
     useEffect(() => {
         if (userId) {
@@ -43,7 +42,6 @@ const Chat = () => {
                 (data.sender === selectedUser || data.receiver === selectedUser)
             ) {
                 setMessages((prev) => [...prev, data]);
-                setMessageCount((count) => count + 1); // 🔄 Force re-render
             }
         });
     
@@ -62,8 +60,6 @@ const Chat = () => {
             socket.off("invitePlayer"); // ✅ Corrected cleanup
         };
     }, [userId, selectedUser, navigate]);
-    
-    
 
 // ✅ Step 2: Fetch chat history when a user is selected
 useEffect(() => {
@@ -77,9 +73,6 @@ useEffect(() => {
     }
 }, [userId, selectedUser]);  // ✅ Now updates when userId changes too
 
-
-    
-    
 
     const sendMessage = async () => {
         if (!message.trim() || !selectedUser) {
@@ -111,8 +104,6 @@ useEffect(() => {
             console.error("❌ Error sending message:", error);
         }
     };
-    
-    
 
     const invitePlayer = () => {
         if (selectedUser) {
