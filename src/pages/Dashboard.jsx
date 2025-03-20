@@ -6,7 +6,7 @@ const Dashboard = () => {
     return (
         <div>
             <h2>Welcome to the Dashboard</h2>
-            <button onClick={() => navigate("/")}>Start Game</button>
+            <button onClick={() => navigate("/game-play")}>Start Game</button>
             <button onClick={() => navigate("/chat")}>Go to Chat</button>
         </div>
     );

@@ -15,13 +15,13 @@ function App() {
                 <h1>Multiplayer Chess with Video Chat</h1>
                 <Routes>
                     {/* Home Route */}
-                    <Route path="/" element={<MainGame />} />
+                    <Route path="/game-play" element={<MainGame />} />
 
                     {/* Game Over Page */}
                     <Route path="/game-over" element={<GameOver />} />
 
                     {/* Auth Routes */}
-                    <Route path="/register" element={<Register />} />
+                    <Route path="/" element={<Register />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/chat" element={<Chat />} />
