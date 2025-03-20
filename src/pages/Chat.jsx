@@ -3,9 +3,11 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
 
-//const socket = io("http://localhost:5000"); // Connect to backend
-const socket = io("https://chess-project-jvvt.onrender.com");
-
+// ✅ Use your deployed backend URL
+const BASE_URL = "https://chess-project-jvvt.onrender.com";
+const socket = io(BASE_URL, {
+    transports: ["websocket", "polling"]
+});
 
 const Chat = () => {
     const navigate = useNavigate();
@@ -20,25 +22,25 @@ const Chat = () => {
             socket.emit("joinChat", userId);
             console.log("✅ Joining chat with userId:", userId); // Debugging
         }
-    
+
         // ✅ Fetch users from MongoDB when component loads
-        axios.get("http://localhost:5000/api/users")
+        axios.get(`${BASE_URL}/api/users`)
             .then((res) => {
                 console.log("✅ Fetched Users from MongoDB:", res.data);
                 setUsers(res.data);
             })
             .catch((err) => console.error("❌ Error fetching users:", err));
-    
+
         // ✅ Listen for updates from Socket.io
         socket.on("updateUsers", (userList) => {
             console.log("🔄 Updated Users from Socket.io:", userList);
             setUsers((prevUsers) => [...new Set([...prevUsers, ...userList])]);
         });
-    
+
         // ✅ Listen for incoming messages
         socket.on("receiveMessage", (data) => {
             console.log(`📩 Received message:`, data);
-    
+
             if (
                 (data.receiver === userId || data.sender === userId) &&
                 (data.sender === selectedUser || data.receiver === selectedUser)
@@ -46,7 +48,7 @@ const Chat = () => {
                 setMessages((prev) => [...prev, data]);
             }
         });
-    
+
         // ✅ Listen for game invites
         socket.on("invitePlayer", ({ fromUser }) => {
             console.log(`🎮 Received game invite from ${fromUser}`);
@@ -54,7 +56,7 @@ const Chat = () => {
                 navigate("/"); // Redirect to game page
             }
         });
-    
+
         return () => {
             console.log("❌ Cleaning up event listeners...");
             socket.off("receiveMessage");
@@ -63,42 +65,41 @@ const Chat = () => {
         };
     }, [userId, selectedUser, navigate]);
 
-// ✅ Step 2: Fetch chat history when a user is selected
-useEffect(() => {
-    if (selectedUser && userId) {
-        axios.get(`http://localhost:5000/api/messages/${userId}/${selectedUser}`)
-            .then((res) => {
-                console.log("📜 Chat History:", res.data);
-                setMessages(res.data);
-            })
-            .catch((err) => console.error("❌ Error fetching chat history:", err));
-    }
-}, [userId, selectedUser]);  // ✅ Now updates when userId changes too
-
+    // ✅ Step 2: Fetch chat history when a user is selected
+    useEffect(() => {
+        if (selectedUser && userId) {
+            axios.get(`${BASE_URL}/api/messages/${userId}/${selectedUser}`)
+                .then((res) => {
+                    console.log("📜 Chat History:", res.data);
+                    setMessages(res.data);
+                })
+                .catch((err) => console.error("❌ Error fetching chat history:", err));
+        }
+    }, [userId, selectedUser]);  // ✅ Now updates when userId changes too
 
     const sendMessage = async () => {
         if (!message.trim() || !selectedUser) {
             alert("Please select a user to chat with!");
             return;
         }
-    
+
         const newMessage = {
             sender: userId,
             receiver: selectedUser,
             text: message
         };
-    
+
         try {
             console.log("📤 Sending message to backend:", newMessage);
-    
+
             // ✅ Store message in MongoDB
-            const response = await axios.post("http://localhost:5000/api/messages", newMessage);
-    
+            const response = await axios.post(`${BASE_URL}/api/messages`, newMessage);
+
             console.log("✅ Message saved in MongoDB:", response.data);
-    
+
             // ✅ Emit message via socket
             socket.emit("sendMessage", newMessage);
-    
+
             // ✅ Update UI immediately
             setMessages((prev) => [...prev, newMessage]);
             setMessage("");
