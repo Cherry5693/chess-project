@@ -3,7 +3,9 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:5000"); // Connect to backend
+//const socket = io("http://localhost:5000"); // Connect to backend
+const socket = io("https://chess-project-jvvt.onrender.com");
+
 
 const Chat = () => {
     const navigate = useNavigate();
