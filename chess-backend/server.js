@@ -202,8 +202,8 @@ mongoose.connect(process.env.MONGO_URI, {
 // const User = mongoose.model("User", userSchema);
 
 
-// User Registration
-app.post("/register", async (req, res) => {
+// User Registration  updating....................
+app.post("/", async (req, res) => {
     try {
         const { username, email, password } = req.body;
 
