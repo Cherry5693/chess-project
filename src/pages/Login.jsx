@@ -2,8 +2,6 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 
-const BASE_URL = "https://chess-project-jvvt.onrender.com"; // ✅ Updated backend URL
-
 const Login = () => {
     const [formData, setFormData] = useState({ email: "", password: "" });
     const [error, setError] = useState("");
@@ -16,7 +14,8 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post(`${BASE_URL}/login`, formData); // ✅ Updated URL
+            const res = await axios.post("https://chess-rfp1.onrender.com/login", formData);
+
             
             // Store token and userId in localStorage
             localStorage.setItem("token", res.data.token);
@@ -38,7 +37,7 @@ const Login = () => {
                 <input type="password" name="password" placeholder="Password" onChange={handleChange} required />
                 <button type="submit">Login</button>
             </form>
-            <p>Don't have an account? <Link to="/">Register here</Link></p>
+            <p>Don't have an account? <Link to="/register">Register here</Link></p>
         </div>
     );
 };

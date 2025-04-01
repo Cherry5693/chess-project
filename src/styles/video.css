@@ -1,0 +1,23 @@
+/* Video Chat Styles */
+.videocall-container {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.videocall {
+  width: 15em;
+  border-radius: 20px;
+  margin-top: 20px;
+  background-color: #000;
+}
+
+/* Hide video chat container initially */
+.video-chat-space {
+  display: none;
+}
+
+/* Show when active */
+.video-chat-space.active {
+  display: flex;
+}

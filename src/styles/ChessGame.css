@@ -1,0 +1,9 @@
+.chessboard-container{
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+}
+
+.chessboard-wrapper{
+  width: 30em;
+}

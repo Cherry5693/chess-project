@@ -14,7 +14,7 @@ const Register = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post("https://chess-project-jvvt.onrender.com/register", formData);
+            const res = await axios.post("https://chess-rfp1.onrender.com/register", formData);
             alert(res.data.message);
             navigate("/login");
         } catch (err) {
